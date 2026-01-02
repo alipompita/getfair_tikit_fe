@@ -9,6 +9,8 @@ import { useState } from "react";
 import { login } from "../api/auth.js";
 import Loader from "../components/Loader.jsx";
 import { toast } from "react-toastify";
+import logo from "../assets/brand/logo.png";
+import getfairLogo from "../assets/brand/getfair-logo.png";
 
 
 library.add(fas, far, fab)
@@ -40,9 +42,8 @@ export default function Login() {
             <div className="bg-white w-full max-w-sm p-8 rounded-xl shadow-lg">
                 {/* Logo */}
                 <div className="flex flex-col items-center mb-6">
-                    <img src="/path-to-your-logo.png" alt="tikit logo" className="w-20 h-20 mb-2" />
-                    <h1 className="text-2xl font-semibold text-gray-900">tikit</h1>
-                    <p className="text-gray-700 mt-1">Login</p>
+                    <img src={logo} alt="tikit logo" className="w-60 mb-2" />
+                    <h3 className="text-xl font-semibold text-gray-900">Login</h3>
                 </div>
 
                 {/* Form */}
@@ -107,13 +108,17 @@ export default function Login() {
                 {/* Register link */}
                 <p className="text-center text-gray-700 mt-6">
                     Don’t have an account?{" "}
-                    <a href="#" className="text-red-500 hover:underline">
+                    <a href="/register" className="text-red-500 hover:underline">
                         Register
                     </a>
                 </p>
 
                 {/* Footer */}
-                <p className="text-center text-red-500 mt-6 font-semibold">Getfair</p>
+                <footer>
+                    <div className="flex flex-col items-center">
+                        <img src={getfairLogo} alt="tikit logo" className="w-20 mt-10" />
+                    </div>
+                </footer>
             </div>
         </div>
     );
