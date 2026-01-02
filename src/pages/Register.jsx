@@ -6,7 +6,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { useState } from "react";
-import { login } from "../api/auth.js";
+import { login, register } from "../api/auth.js";
 import Loader from "../components/Loader.jsx";
 import { toast } from "react-toastify";
 import logo from "../assets/brand/logo.png";
@@ -17,7 +17,8 @@ library.add(fas, far, fab)
 
 
 
-export default function Login() {
+export default function Register() {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ export default function Login() {
         e.preventDefault();
         try {
             setLoading(true);
-            const data = await login(email, password);
+            const data = await register(name, email, password);
             console.log("Login successful:", data);
             setLoading(false);
             // Handle successful login (e.g., store token, redirect)
@@ -43,12 +44,23 @@ export default function Login() {
                 {/* Logo */}
                 <div className="flex flex-col items-center mb-6">
                     <img src={logo} alt="tikit logo" className="w-40 h-auto drop-shadow-lg" />
-                    <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h1>
-                    <p className="text-gray-600 text-center text-sm">Sign in to your account</p>
+                    <h1 className="text-2xl font-bold text-gray-800 mb-2">Signup</h1>
+                    <p className="text-gray-600 text-center text-sm">Register a new account</p>
                 </div>
 
                 {/* Form */}
                 <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div className="relative">
+                        <FontAwesomeIcon icon="fa-user" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                            id="name"
+                            type="text"
+                            placeholder="Enter your full name"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="relative">
                         <FontAwesomeIcon icon="fa-envelope" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
@@ -60,7 +72,18 @@ export default function Login() {
                             required
                         />
                     </div>
-
+                    <hr className="border-gray-200" />
+                    <div className="relative">
+                        <FontAwesomeIcon icon="fa-lock" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="relative">
                         <FontAwesomeIcon icon="fa-lock" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
@@ -73,15 +96,7 @@ export default function Login() {
                         />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                        <label className="flex items-center">
-                            <input type="checkbox" className="mr-2" />
-                            <span className="text-sm text-gray-600">Remember me</span>
-                        </label>
-                        <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
-                            Forgot Password?
-                        </a>
-                    </div>
+
 
                     <button
                         type="submit"
@@ -89,7 +104,7 @@ export default function Login() {
                         className="w-full bg-gradient-to-r from-black to-red-950 text-white py-2 rounded-xl hover:from-red-950 hover:to-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold shadow-lg"
                     >
                         <Loader loading={loading} />
-                        {loading ? "Signing in..." : "Sign In"}
+                        {loading ? "Signing Up..." : "Sign Up"}
                     </button>
                 </form>
 
@@ -108,9 +123,9 @@ export default function Login() {
 
                 {/* Register link */}
                 <p className="text-center text-gray-600 mt-6">
-                    Don’t have an account?{" "}
-                    <a href="/register" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
-                        Sign up
+                    Already have an account?{" "}
+                    <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                        Sign In
                     </a>
                 </p>
 
