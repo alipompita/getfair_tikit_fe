@@ -6,7 +6,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { useState } from "react";
-import { login, register } from "../api/auth.js";
+import { register } from "../api/auth.js";
 import Loader from "../components/Loader.jsx";
 import { toast } from "react-toastify";
 import logo from "../assets/brand/logo.png";
