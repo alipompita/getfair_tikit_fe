@@ -1,12 +1,13 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { useNavigate } from "react-router-dom";
 
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { useState } from "react";
-import { login } from "../api/auth.js";
+import { login, setAuth } from "../api/auth.js";
 import Loader from "../components/Loader.jsx";
 import { toast } from "react-toastify";
 import logo from "../assets/brand/logo.png";
@@ -17,17 +18,26 @@ library.add(fas, far, fab)
 
 
 
+
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
             const data = await login(email, password);
-            console.log("Login successful:", data);
+            // console.log("Login successful:", data);
+            if (data.token && data.user) {
+                await setAuth(data.token, data.user);
+                toast.success("Login successful!");
+                navigate("/dashboard");
+            }
+
             setLoading(false);
             // Handle successful login (e.g., store token, redirect)
         } catch (error) {
@@ -107,7 +117,7 @@ export default function Login() {
                 </div>
 
                 {/* Register link */}
-                <p className="text-center text-gray-600 mt-6">
+                <p className="text-center text-gray-600 mt-6 text-sm">
                     Don’t have an account?{" "}
                     <a href="/register" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
                         Sign up
@@ -116,7 +126,7 @@ export default function Login() {
 
                 {/* Footer */}
                 <div className="flex justify-center mt-6">
-                    <img src={getfairLogo} alt="Getfair logo" className="w-12 h-auto opacity-70" />
+                    <img src={getfairLogo} alt="Getfair logo" className="w-15 h-auto opacity-70" />
                 </div>
             </div>
         </div>

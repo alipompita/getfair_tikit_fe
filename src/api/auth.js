@@ -10,7 +10,7 @@ export async function login(email, password) {
     });
 
     if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error(JSON.stringify(await response.json()));
     }
 
     return response.json();
@@ -26,7 +26,7 @@ export async function register(name, email, password) {
     });
 
     if (!response.ok) {
-        throw new Error('Registration failed');
+        throw new Error(JSON.stringify(await response.json()));
     }
 
     return response.json();
@@ -45,6 +45,23 @@ export async function logout(token) {
         throw new Error('Logout failed');
     }
 
+    localStorage.removeItem("tikit_token");
+    localStorage.removeItem("user");
+
     return response.json();
+}
+
+export const setAuth = (token, user) => {
+    localStorage.setItem("tikit_token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+}
+
+export const getToken = () => {
+    return localStorage.getItem("tikit_token");
+}
+
+export const getUser = () => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
 }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-
+import { useNavigate } from "react-router-dom";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -21,23 +21,54 @@ export default function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [password_confirmation, comfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             setLoading(true);
+
+            if (password !== password_confirmation) {
+                toast.error("Passwords do not match.");
+                return;
+            }
+
             const data = await register(name, email, password);
-            console.log("Login successful:", data);
-            setLoading(false);
-            // Handle successful login (e.g., store token, redirect)
+            console.log("Registration successful:", data);
+            toast.success("Registration successful! Please log in.");
+            navigate("/login");
+
+            // success handling (redirect, etc.)
         } catch (error) {
-            toast.error("Login failed. Invalid Credentials.");
-            console.error("Login error:", error);
+            const response = JSON.parse(error.message);
+            console.log("API Error Response:", response);
+            const apiErrors = response?.errors;
+
+            if (apiErrors) {
+                // Loop through each field (email, password, etc.)
+                Object.values(apiErrors).forEach((messages) => {
+                    messages.forEach((message) => {
+                        toast.error(message);
+                    });
+                });
+            } else {
+                // Fallback error
+                toast.error(
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Registration failed"
+                );
+            }
+
+            console.error("Registration error:", error);
+        } finally {
             setLoading(false);
-            // Handle login error (e.g., show error message)
         }
     };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
             <div className="bg-white/80 backdrop-blur-lg w-full max-w-sm p-6 rounded-2xl shadow-2xl border border-white/20">
@@ -87,11 +118,11 @@ export default function Register() {
                     <div className="relative">
                         <FontAwesomeIcon icon="fa-lock" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
-                            id="password"
+                            id="confirm_password"
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder="Confirm your password"
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => comfirmPassword(e.target.value)}
                             required
                         />
                     </div>
@@ -122,7 +153,7 @@ export default function Register() {
                 </div>
 
                 {/* Register link */}
-                <p className="text-center text-gray-600 mt-6">
+                <p className="text-center text-gray-600 mt-6 text-sm">
                     Already have an account?{" "}
                     <a href="/login" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
                         Sign In
@@ -131,7 +162,7 @@ export default function Register() {
 
                 {/* Footer */}
                 <div className="flex justify-center mt-6">
-                    <img src={getfairLogo} alt="Getfair logo" className="w-12 h-auto opacity-70" />
+                    <img src={getfairLogo} alt="Getfair logo" className="w-15 h-auto opacity-70" />
                 </div>
             </div>
         </div>
